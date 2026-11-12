@@ -233,8 +233,12 @@ namespace MDSAPI.Patching
                     if (match >= 0)
                     {
                         count++;
-                        var load = new CodeInstruction(OpCodes.Ldsfld, field) { labels = ins.labels, blocks = ins.blocks };
-                        yield return load;
+                        // Rewrite in place so jump labels and exception blocks on the original
+                        // instruction carry over. Copying them into a new instruction would name
+                        // Harmony's Label type, which the net35 Harmony and netstandard disagree on.
+                        ins.opcode = OpCodes.Ldsfld;
+                        ins.operand = field;
+                        yield return ins;
                         yield return new CodeInstruction(OpCodes.Ldc_I4, wanted[match].Index);
                         yield return new CodeInstruction(OpCodes.Ldelem_R4);
                         continue;

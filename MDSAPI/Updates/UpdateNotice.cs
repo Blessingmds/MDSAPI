@@ -567,7 +567,9 @@ namespace MDSAPI.Updates
             t.color = color;
             t.text = text;
             t.richText = true;
+#pragma warning disable CS0618 // textWrappingMode is newer than some TMP builds the game ships
             t.enableWordWrapping = true;
+#pragma warning restore CS0618
             t.alignment = TextAlignmentOptions.Left;
             t.raycastTarget = false;
             rt.gameObject.AddComponent<LayoutElement>();
