@@ -16,8 +16,8 @@
          Pinned, every mod loads against any MDSAPI and Requires() decides. Bump only for a
          2.0-style break. FileVersion/Version carry the real release number. -->
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.2.0.0</FileVersion>
-    <Version>0.2.0</Version>
+    <FileVersion>0.2.1.0</FileVersion>
+    <Version>0.2.1</Version>
     <Authors>BlessingMds</Authors>
     <Configurations>Mono;Il2Cpp</Configurations>
     <!-- net6.0 is out of Microsoft support, but it is what MelonLoader's IL2CPP runtime is.

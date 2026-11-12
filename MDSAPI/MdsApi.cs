@@ -7,7 +7,7 @@ using MDSAPI.Internal.Interop;
 using MDSAPI.Lifecycle;
 using MDSAPI.Logging;
 
-[assembly: MelonInfo(typeof(MDSAPI.MdsApi), "MDSAPI", "0.2.0", "BlessingMds")]
+[assembly: MelonInfo(typeof(MDSAPI.MdsApi), "MDSAPI", "0.2.1", "BlessingMds")]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
 namespace MDSAPI
@@ -19,7 +19,7 @@ namespace MDSAPI
     public sealed class MdsApi : MelonMod
     {
         /// <summary>The MDSAPI version mods can check against.</summary>
-        public static readonly Version ApiVersion = new(0, 2, 0);
+        public static readonly Version ApiVersion = new(0, 2, 1);
 
         /// <summary>The game version this build was developed and tested against.</summary>
         public const string TargetedGameVersion = "0.4.7f12";

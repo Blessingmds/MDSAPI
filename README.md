@@ -115,6 +115,23 @@ references `MDSAPI`, compiles once, and runs on either branch. `MDSAPILoader` is
 `netstandard2.1` assembly that runs on both runtimes and picks the matching MDSAPI at
 startup — one plugin, one download, no branch awareness required of the player.
 
+### Shipping a mod for both branches (0.2.1+)
+
+The loader does the same for any mod laid out like MDSAPI. Build both configurations and
+ship them in one folder named after the mod:
+
+```
+Mods/YourMod/Il2Cpp/YourMod.dll
+Mods/YourMod/Mono/YourMod.dll
+```
+
+At every launch the loader registers the build for the running branch, after MDSAPI, so
+`OnInitializeMelon` can already use the API. Players install one download and can switch
+Steam branches without reinstalling. Helper DLLs next to the mod load with it. A folder
+with only the other runtime's build is skipped with a warning; one with neither is left
+alone. A leftover copy of the same DLL directly in `Mods/` is refused by MelonLoader as a
+duplicate, and the loader logs which file to delete.
+
 Type names match exactly across the two — 2,076 `ScheduleOne.*` types on each side, zero
 divergence. Member *shapes* do not: `LoadManager.onPreLoad` is
 a **field** on Mono and a **property** on IL2CPP, and the same holds for the other lifecycle
@@ -172,8 +189,9 @@ update renames something, one wrapper changes and every mod keeps compiling.
 
 ```
 Plugins/MDSAPILoader.dll
-Mods/MDSAPI/MDSAPI.Mono.dll
-Mods/MDSAPI/MDSAPI.Il2Cpp.dll
+Mods/MDSAPI/Il2Cpp/MDSAPI.dll
+Mods/MDSAPI/Mono/MDSAPI.dll
 ```
 
-Both MDSAPI DLLs are meant to be there. The loader picks one.
+Both MDSAPI DLLs are meant to be there. The loader picks one, and does the same for mods
+that ship both builds.
