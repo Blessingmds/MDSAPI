@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+local.build.props
+
+# Never commit game assemblies, generated interop assemblies, or decompiled output.
+# They are the user's installed copy and are not ours to redistribute.
+*.dll
+!**/lib/**/*.dll
+Assembly-CSharp*
+Il2Cpp*/
+dump/

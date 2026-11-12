@@ -1,0 +1,28 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSAPI", "MDSAPI\MDSAPI.csproj", "{A1000000-0000-0000-0000-00000000000A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSAPILoader", "MDSAPILoader\MDSAPILoader.csproj", "{A1000000-0000-0000-0000-00000000000B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSAPI.SelfTest", "MDSAPI.SelfTest\MDSAPI.SelfTest.csproj", "{A1000000-0000-0000-0000-00000000000C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Mono|Any CPU = Mono|Any CPU
+		Il2Cpp|Any CPU = Il2Cpp|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1000000-0000-0000-0000-00000000000A}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
+		{A1000000-0000-0000-0000-00000000000A}.Mono|Any CPU.Build.0 = Mono|Any CPU
+		{A1000000-0000-0000-0000-00000000000A}.Il2Cpp|Any CPU.ActiveCfg = Il2Cpp|Any CPU
+		{A1000000-0000-0000-0000-00000000000A}.Il2Cpp|Any CPU.Build.0 = Il2Cpp|Any CPU
+		{A1000000-0000-0000-0000-00000000000B}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
+		{A1000000-0000-0000-0000-00000000000B}.Mono|Any CPU.Build.0 = Mono|Any CPU
+		{A1000000-0000-0000-0000-00000000000B}.Il2Cpp|Any CPU.ActiveCfg = Il2Cpp|Any CPU
+		{A1000000-0000-0000-0000-00000000000B}.Il2Cpp|Any CPU.Build.0 = Il2Cpp|Any CPU
+		{A1000000-0000-0000-0000-00000000000C}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
+		{A1000000-0000-0000-0000-00000000000C}.Mono|Any CPU.Build.0 = Mono|Any CPU
+		{A1000000-0000-0000-0000-00000000000C}.Il2Cpp|Any CPU.ActiveCfg = Il2Cpp|Any CPU
+		{A1000000-0000-0000-0000-00000000000C}.Il2Cpp|Any CPU.Build.0 = Il2Cpp|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>MDSAPILoader</RootNamespace>
+    <AssemblyName>MDSAPILoader</AssemblyName>
+
+    <!-- ONE loader assembly, for both runtimes — overriding the per-configuration
+         TargetFramework in Directory.Build.props on purpose.
+
+         Both configurations deploy to the same Plugins\MDSAPILoader.dll, so whichever was
+         built last used to win. A net6.0 loader on the Mono branch throws TypeLoadException
+         before it does anything, and the failure looks like the loader being broken rather
+         than the wrong file being present.
+
+         netstandard2.1 runs on both the Mono runtime and net6.0, so building it once
+         removes the conflict instead of managing it. It also means a player installs one
+         loader and never has to know which Steam branch they are on, which was the point
+         of having a loader at all. -->
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks></TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- Compiled against the net35 MelonLoader: the lowest common denominator of the two,
+       and every API used here (MelonPlugin, MelonEnvironment, MelonAssembly, MelonLogger)
+       exists in both. The reference binds by assembly name at runtime, so it resolves to
+       whichever MelonLoader is actually loaded. The loader references nothing else — not
+       the game, not MDSAPI — which is what lets one build serve both. -->
+  <ItemGroup>
+    <Reference Include="MelonLoader">
+      <HintPath>$(MelonLoaderNet35Path)\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="DeployLocal" AfterTargets="Build"
+          Condition="'$(AutomateLocalDeployment)' == 'true' AND '$(GameDir)' != ''">
+    <MakeDir Directories="$(GameDir)\Plugins" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\Plugins" />
+  </Target>
+
+</Project>

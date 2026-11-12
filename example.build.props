@@ -1,0 +1,15 @@
+<Project>
+  <!-- Copy to local.build.props (gitignored) and point GameDir at your install. -->
+  <PropertyGroup>
+    <GameDir>D:\SteamLibrary\steamapps\common\Schedule I</GameDir>
+
+    <MonoAssembliesPath>$(GameDir)\Schedule I_Data\Managed</MonoAssembliesPath>
+    <Il2CppAssembliesPath>$(GameDir)\MelonLoader\Il2CppAssemblies</Il2CppAssembliesPath>
+    <MelonLoaderNet6Path>$(GameDir)\MelonLoader\net6</MelonLoaderNet6Path>
+    <MelonLoaderNet35Path>$(GameDir)\MelonLoader\net35</MelonLoaderNet35Path>
+
+    <!-- true copies build output straight into the game. Off by default so a clean
+         clone never writes into someone's install without them asking. -->
+    <AutomateLocalDeployment>false</AutomateLocalDeployment>
+  </PropertyGroup>
+</Project>

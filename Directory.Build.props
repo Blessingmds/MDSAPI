@@ -1,0 +1,39 @@
+<Project>
+
+  <!-- One place for the runtime split. Every project in the solution inherits this. -->
+  <PropertyGroup>
+    <!-- C# 9, not latest. C# 10 compiles $"..." into
+         System.Runtime.CompilerServices.DefaultInterpolatedStringHandler, which does not
+         exist on the Mono runtime the alternate branch uses — the assembly loads and then
+         throws TypeLoadException the first time it formats a string. C# 9 emits
+         string.Format instead. Both configurations use it so the two builds stay the same
+         source, and so this cannot regress on one runtime only. -->
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <FileVersion>0.2.0.0</FileVersion>
+    <Version>0.2.0</Version>
+    <Authors>BlessingMds</Authors>
+    <Configurations>Mono;Il2Cpp</Configurations>
+
+    <!-- The game version this build was developed against. Logged at startup; when a
+         player reports a break, this is the first thing you want to know. -->
+    <MdsTargetGameVersion>0.4.7f12</MdsTargetGameVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Mono'">
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <DefineConstants>$(DefineConstants);MDS_MONO</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Il2Cpp'">
+    <TargetFramework>net6.0</TargetFramework>
+    <DefineConstants>$(DefineConstants);MDS_IL2CPP</DefineConstants>
+  </PropertyGroup>
+
+  <!-- local.build.props holds this machine's game path and is gitignored.
+       Copy example.build.props to local.build.props and edit it. -->
+  <Import Project="$(MSBuildThisFileDirectory)local.build.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)local.build.props')" />
+
+</Project>

@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>MDSAPI.SelfTest</RootNamespace>
+    <AssemblyName>MDSAPI.SelfTest</AssemblyName>
+
+    <!-- Built ONCE, for both runtimes — the claim this project exists to test.
+         It never names a game type, only MDSAPI and MelonLoader, so there is nothing to
+         compile twice. If this runs on both branches from a single DLL, then MDSAPI's
+         single-assembly-identity design works for real mods too. -->
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks></TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Ordering only. Without this, MSBuild resolves the file reference below before
+         MDSAPI has been built and fails with MSB3245 "Could not locate the assembly".
+         ReferenceOutputAssembly=false keeps it from being treated as a real reference.
+         SkipGetTargetFrameworkProperties is the one that matters: without it MSBuild still
+         negotiates target frameworks and refuses outright, because this project is
+         netstandard2.1 while MDSAPI is net6.0 under the Il2Cpp configuration. That check
+         runs before the output-assembly question is ever reached. -->
+    <ProjectReference Include="..\MDSAPI\MDSAPI.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <Private>false</Private>
+    </ProjectReference>
+
+    <!-- Both MDSAPI builds are the assembly "MDSAPI", so either satisfies this and the
+         resulting SelfTest.dll runs against whichever one the loader picked. The path is
+         per-configuration only because the compiler needs a file that exists on this
+         machine — you cannot build the Mono one while on the default branch. -->
+    <Reference Include="MDSAPI">
+      <HintPath Condition="'$(Configuration)' == 'Mono'">..\MDSAPI\bin\Mono\netstandard2.1\MDSAPI.dll</HintPath>
+      <HintPath Condition="'$(Configuration)' == 'Il2Cpp'">..\MDSAPI\bin\Il2Cpp\net6.0\MDSAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>$(MelonLoaderNet35Path)\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="DeployLocal" AfterTargets="Build"
+          Condition="'$(AutomateLocalDeployment)' == 'true' AND '$(GameDir)' != ''">
+    <MakeDir Directories="$(GameDir)\Mods" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\Mods" />
+  </Target>
+
+</Project>

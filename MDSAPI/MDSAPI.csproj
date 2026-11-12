@@ -1,0 +1,104 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>MDSAPI</RootNamespace>
+    <!-- Both builds share one assembly name so a mod referencing "MDSAPI" binds to
+         whichever one MDSAPILoader put in the domain. Only the file name differs. -->
+    <AssemblyName>MDSAPI</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- CodeConstant patches native code under IL2CPP. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- Both builds are the assembly "MDSAPI" and are told apart by FOLDER, not by file
+       name — because the C# compiler derives an assembly's identity from its output file
+       name. AssemblyName only matters because it feeds TargetName, which feeds the output
+       path; setting TargetName separately renames the file AND the identity with it. So
+       two differently-named files are necessarily two different assemblies, and a mod
+       compiled against one will not bind to the other.
+
+       Same name in different folders keeps one identity, which is what lets a mod
+       reference "MDSAPI", compile once, and run on either branch. MDSAPILoader picks the
+       folder at startup. -->
+
+  <!-- Game + loader assemblies are referenced from the local install and never copied
+       to output. Shipping a copy of Assembly-CSharp.dll is both a redistribution
+       problem and a guaranteed version conflict. -->
+  <ItemGroup Condition="'$(Configuration)' == 'Il2Cpp'">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(Il2CppAssembliesPath)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>$(Il2CppAssembliesPath)\Il2Cppmscorlib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(Il2CppAssembliesPath)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>$(Il2CppAssembliesPath)\Il2CppSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(Il2CppAssembliesPath)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppInterop.Common">
+      <HintPath>$(MelonLoaderNet6Path)\Il2CppInterop.Common.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>$(MelonLoaderNet6Path)\Il2CppInterop.Runtime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>$(MelonLoaderNet6Path)\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(MelonLoaderNet6Path)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(MelonLoaderNet6Path)\Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Mono'">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(MonoAssembliesPath)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(MonoAssembliesPath)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(MonoAssembliesPath)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>$(MelonLoaderNet35Path)\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(MelonLoaderNet35Path)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(MonoAssembliesPath)\Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="DeployLocal" AfterTargets="Build"
+          Condition="'$(AutomateLocalDeployment)' == 'true' AND '$(GameDir)' != ''">
+    <MakeDir Directories="$(GameDir)\Mods\MDSAPI\$(Configuration)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\Mods\MDSAPI\$(Configuration)" />
+  </Target>
+
+</Project>
