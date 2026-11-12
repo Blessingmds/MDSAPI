@@ -10,11 +10,19 @@
          source, and so this cannot regress on one runtime only. -->
     <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <!-- Pinned. The assembly version is an identity a mod binds to, not the release number:
+         a mod built against MDSAPI 0.3 asks the runtime for "MDSAPI 0.3.0.0 or newer", so a
+         player still on 0.2 gets a load failure instead of MdsApi.Requires' clear message.
+         Pinned, every mod loads against any MDSAPI and Requires() decides. Bump only for a
+         2.0-style break. FileVersion/Version carry the real release number. -->
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <FileVersion>0.2.0.0</FileVersion>
     <Version>0.2.0</Version>
     <Authors>BlessingMds</Authors>
     <Configurations>Mono;Il2Cpp</Configurations>
+    <!-- net6.0 is out of Microsoft support, but it is what MelonLoader's IL2CPP runtime is.
+         The SDK's "out of support" warning (NETSDK1138) is about a choice we cannot make. -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
 
     <!-- The game version this build was developed against. Logged at startup; when a
          player reports a break, this is the first thing you want to know. -->

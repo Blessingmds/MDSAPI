@@ -68,6 +68,19 @@ namespace MDSAPI.Internal.Interop
         }
 #endif
 
+        /// <summary>The full native class name ("ScheduleOne.UI.MainMenu.MenuScreen") on either runtime.</summary>
+        internal static string FullTypeName(object obj)
+        {
+            if (obj is null) return null;
+#if MDS_IL2CPP
+            if (obj is Il2CppSystem.Object o)
+            {
+                try { return o.GetIl2CppType().FullName; } catch { }
+            }
+#endif
+            return obj.GetType().FullName;
+        }
+
         /// <summary>The native class name under IL2CPP, the CLR name under Mono.</summary>
         internal static string TypeName(object obj)
         {

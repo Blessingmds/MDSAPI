@@ -45,6 +45,9 @@ namespace MDSAPI
                          TargetedGameVersion + "). Things may have moved; report anything " +
                          "odd with this line.");
 
+            _settings = MDSAPI.Config.ModConfig.Load<MDSAPI.Updates.MdsApiSettings>();
+            MDSAPI.Updates.UpdateCheck.Register("MDSAPI", ApiVersion.ToString(3), MDSAPI.Updates.UpdateCheck.MdsApiRepo);
+
             GameLifecycle.OnPreLoad += OnPreLoad;
             GameLifecycle.OnLoadComplete += OnLoadComplete;
             GameLifecycle.OnSaveStart += OnSaveStart;
@@ -52,7 +55,42 @@ namespace MDSAPI
             RegisterModules();
         }
 
-        public override void OnLateInitializeMelon() => GameLifecycle.Bind();
+        private MDSAPI.Updates.MdsApiSettings _settings;
+        private static bool _inWorld;
+
+        public override void OnLateInitializeMelon()
+        {
+            GameLifecycle.Bind();
+            // Mods have registered by now; checks run in the background from here.
+            MDSAPI.Updates.UpdateNotice.Settings = _settings;
+            if (_settings != null && _settings.PreviewUpdateNotice)
+                MDSAPI.Updates.UpdateNotice.AddUpdate("Example Mod (preview)", "9.9.9", "1.0.0", MDSAPI.Updates.UpdateCheck.MdsApiUrl);
+            MDSAPI.Updates.UpdateCheck.Start(_settings?.CheckForUpdates ?? true);
+        }
+
+        public override void OnUpdate()
+        {
+            MDSAPI.Updates.UpdateCheck.Drain();
+            MDSAPI.Updates.UpdateNotice.Tick(_inWorld);
+        }
+
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName) => _inWorld = sceneName == "Main";
+
+        /// <summary>
+        /// Call first thing in a mod's OnInitializeMelon. If the installed MDSAPI is older than
+        /// <paramref name="minimumVersion"/>, logs an error naming the mod and the version it
+        /// needs, puts the same line on the main menu, and returns false — the mod should then
+        /// switch itself off rather than fail halfway through with a missing-method error.
+        /// </summary>
+        public static bool Requires(string minimumVersion, string modName)
+        {
+            var need = MDSAPI.Updates.UpdateCheck.ParseVersion(minimumVersion);
+            if (need is null || ApiVersion >= need) return true;
+            var text = modName + " needs MDSAPI " + need.ToString(3) + " or newer — you have " + ApiVersion.ToString(3);
+            Log.Error(text + ". " + modName + " is off until MDSAPI is updated: " + MDSAPI.Updates.UpdateCheck.MdsApiUrl);
+            MDSAPI.Updates.UpdateNotice.AddRequirement(modName, need.ToString(3), ApiVersion.ToString(3), MDSAPI.Updates.UpdateCheck.MdsApiUrl);
+            return false;
+        }
 
         /// <summary>
         /// Every module MDSAPI ships, registered up front.

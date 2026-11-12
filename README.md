@@ -34,12 +34,39 @@ save-root resolution confirmed from real sessions on the default (IL2CPP) and al
 | `Multiplayer` | `Lobby` — host/client, and lobby data for sending settings to clients. |
 | `UI` | `Phone` (open state, home-screen icon, the app area, close-apps), `InteractionPrompt` (the game's "[E] Use" prompt, to copy), `HudQuest` (a quest in the game's HUD list). |
 | `Patching` | `Patch` (Harmony by candidate names), `CodeConstant` (override a compiled-in `const`). |
+| `Updates` | `UpdateCheck.Register` — once a day, checks GitHub for a newer release of MDSAPI or your mod and puts one quiet, clickable line on the main menu. `MdsApi.Requires("0.2.0", "My Mod")` — a mod that needs a newer MDSAPI says so clearly instead of failing with missing-method errors. |
 | `Unity.Cross` | The Unity calls spelled differently per runtime: UnityEvent listeners, real type names, `ObjectKey` for identity. |
 
 Every game object comes back as a small handle (`ItemSlot`, `Buildable`, ...) whose members
 are compiled delegates bound by candidate name — about the cost of a direct access, and a
 renamed member costs one entry in a list here instead of a broken mod. Each module reports
 whether it bound; a module that did not is off on its own and takes nothing else with it.
+
+## Update check and privacy
+
+MDSAPI asks `api.github.com` (or Thunderstore, for mods published there) for the latest release
+of MDSAPI and of every installed mod that uses it or is by BlessingMds — at most once a day per
+repository (cached in `UserData/MDSAPI/update-check.json`). Nothing is sent but those requests,
+and nothing is ever downloaded or installed.
+
+A newer version shows as a card on the main menu: a warning mark, the mod and version (click to
+open its download page), and an underlined *Opt out of automated checks*, which asks for
+confirmation and explains what the check connects to. The card takes the first screen corner no
+other UI (the game's or another mod's) is drawn in; if all four are taken it appears over the
+Continue screen instead. It never shows during play.
+
+Where each mod is checked: BlessingMds mods from `mods.json` in this repository (a new mod is
+covered by adding a line there); any other mod built on MDSAPI from `UpdateCheck.Register`, or
+failing that the GitHub or Thunderstore link in its `MelonInfo` download link. A mod with only a
+Nexus link can't be checked (Nexus's API needs a personal key) and is named once in the log. The
+card only opens https pages on github.com, nexusmods.com and thunderstore.io.
+
+**For mod authors:** to get update notices for your MDSAPI mod, either put your GitHub or
+Thunderstore page in `MelonInfo`'s download link, or call
+`UpdateCheck.Register("My Mod", "1.2.0", "You/MyMod", "https://www.nexusmods.com/...")`.
+
+Releases must be tagged with their version (`v0.3.0` or `0.3.0`) for the comparison to work.
+`"PreviewUpdateNotice": true` in `UserData/MDSAPI.json` shows a sample card, for checking it.
 
 ## Using it
 

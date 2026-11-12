@@ -1,0 +1,11 @@
+{
+  "_comment": "Which GitHub repo belongs to which BlessingMds mod. MDSAPI reads this from GitHub once a day to check installed BlessingMds mods for updates. 'melon' must match the mod's MelonInfo name exactly; only Blessingmds/* repos are used; 'url' must be a github.com or nexusmods.com https link.",
+  "mods": [
+    {
+      "melon": "Stack Limit Plus",
+      "name": "StackLimit Plus",
+      "repo": "Blessingmds/SCH1_StackLimitPlus",
+      "url": "https://www.nexusmods.com/schedule1/mods/623"
+    }
+  ]
+}

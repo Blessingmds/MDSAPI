@@ -10,6 +10,12 @@
          single-assembly-identity design works for real mods too. -->
     <TargetFramework>netstandard2.1</TargetFramework>
     <TargetFrameworks></TargetFrameworks>
+    <!-- Built as netstandard2.1 against whichever MDSAPI this configuration produces. Under
+         Il2Cpp that MDSAPI is net6.0, so MSBuild notices its System.* references are newer
+         than netstandard's and reports MSB3277 once per assembly. It is expected and harmless:
+         this assembly binds to netstandard's, which the net6 runtime satisfies. Kept as a
+         message rather than a warning so real warnings are not buried under seven of these. -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,8 +47,10 @@
     </Reference>
   </ItemGroup>
 
+  <!-- Copied into Mods only when asked for: <DeploySelfTest>true</DeploySelfTest> in
+       local.build.props. Otherwise every MDSAPI build would put a test mod back into the game. -->
   <Target Name="DeployLocal" AfterTargets="Build"
-          Condition="'$(AutomateLocalDeployment)' == 'true' AND '$(GameDir)' != ''">
+          Condition="'$(AutomateLocalDeployment)' == 'true' AND '$(DeploySelfTest)' == 'true' AND '$(GameDir)' != ''">
     <MakeDir Directories="$(GameDir)\Mods" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\Mods" />
   </Target>
